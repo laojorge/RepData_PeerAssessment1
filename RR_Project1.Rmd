@@ -1,0 +1,60 @@
+---
+title: "Reproducible Research: Peer Assessment 1"
+author: "Laercio J Oliveira"
+date: "January 10, 2016"
+output: 
+  html_document:
+    keep_md: true
+---
+
+
+## Loading and preprocessing the data
+
+Reading the data into data frame
+```{r}
+data <- read.csv("activity.csv", na.strings = "NA")
+str(data)
+```
+
+
+```{r}
+summary(data)
+```
+
+
+## What is mean total number of steps taken per day?
+
+#### 1. Calculate the total number of steps taken per day
+```{r, echo=TRUE}
+sumStepsPerDay <- aggregate(steps ~ date, data, sum)
+```
+
+####  2. Make a histogram of the total number of steps taken each day
+```{r, echo=TRUE}
+hist(sumStepsPerDay$steps,col="orange",breaks=30,main="Total steps per day",xlab="Steps per  day")
+```
+
+#### 3. Calculate and report the mean and median of the total number of steps taken per day
+```{r, echo=TRUE}
+summary(sumStepsPerDay)
+```
+Mean = 10766 and Median = 10765
+
+
+
+## What is the average daily activity pattern?
+
+#### 1. Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)  
+
+```{r, echo=TRUE}
+library(dplyr,quietly = TRUE)
+grouped <- group_by(data, interval)
+d_a_pattern <- summarise(grouped, mean=mean(steps, na.rm=TRUE))
+plot(d_a_pattern$interval , d_a_pattern$mean,type = "l", col = "red", xaxt = "n",xlab="Intervals", ylab = "Average across all days")
+```
+
+#### 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+
+```{r, echo=TRUE}
+filter(d_a_pattern, mean==max(mean))
+```
